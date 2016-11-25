@@ -33,7 +33,7 @@ function subfunction(labelname)
     //Logger.log(glabelArray.sort());
     glabelArray = glabelArray.sort(); // sort label names in alphabetical order
     var resplabel = glabelArray[0]; // the response label starts with 1. hence it is always the first item in the sorted array
-    var responseid = getSheetIDADV(resplabel); // use the response label to get the ID of the sheet where response text is stored
+    var responseid = getSheetID(resplabel); // use the response label to get the ID of the sheet where response text is stored
     if (responseid == -1)
     {
       continue;
@@ -218,7 +218,7 @@ function CreateDraft(data)
   var htmlBody = doc.getBody().getText(); // get html text from the template.
   var forScope  = GmailApp.getInboxUnreadCount(); // needed for auth scope
   
-  var myEmailAddress = "abc@xyz.in" // Change to Dwarka Email address later!
+  var myEmailAddress = "abc@xyz.in" // Change to your email address!
   var boundary = "123456654321";
   
   var message = 'From: ' + myEmailAddress + '\n' +
