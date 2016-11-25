@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<script type="text/javascript">
+
+function ConvertTemplate()
+{
+   var textobj = document.getElementById("templatemsg");
+   var text = textobj.value;
+   textobj.value = "";
+   splittext = text.split("\n");
+   for (i = 0; i < splittext.length; i++ )
+   {
+      if (splittext[i] == "")
+	  {
+		 splittext[i] = "<br>";
+	  } else
+	  {
+		 splittext[i] = "<div>" + splittext[i] + "</div>";
+	  }
+	  if (i == 0)
+	  {
+		  textobj.value = splittext[i];
+	  } else
+	  {
+		  textobj.value = textobj.value + '\n' + splittext[i];
+	  }
+   }
+}
+
+</script>
+
+<body>
+
+<form id="form1" style='display:inline'>
+
+<textarea id="templatemsg" name="tempmsg" placeholder="Type message..."></textarea>
+
+<br></br>
+
+<button type="button" id="convtemp" onclick="ConvertTemplate()">Convert</button>
+
+</form>
+
+</body>
+
+<style>
+
+    textarea
+	{
+      background-repeat:no-repeat;
+      background-position:5px 7px;
+      width:82%;
+      height:250px;
+      padding:5px;
+      resize:none;
+	    margin-left: 50px;
+      border:1px solid #ccc;
+      padding-left:40px;
+      border:1px solid #ccc;
+      font-size: 14px;
+      font-family:Droid Sans', serif;
+    }
+	
+	 button#convtemp 
+	{
+      display: inline-block;
+      background-color: #03a9f4;
+      color: #fff;
+	    cursor: pointer;
+      font: 500 14px/20px Roboto,sans-serif;
+      height: 36px;
+      margin-left: 50px;
+      min-width: 36px;
+      outline: 0;
+      overflow: hidden;
+      padding: 8px;
+      text-align: center;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      transition: background-color .2s,box-shadow .2s;
+      vertical-align: middle;
+      white-space: nowrap;
+      border-radius: 0px;
+	    vertical-align: middle;
+	    align-items: flex-start;
+	    letter-spacing: normal;
+      word-spacing: normal;
+	    text-indent: 0px;
+      text-shadow: none;
+	    border-spacing: 0;
+      border-collapse: collapse;
+	    border-spacing: 0;
+    }
+
+</style>
+</html>
