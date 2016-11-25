@@ -9,6 +9,11 @@ body {
   line-height: 1.5;
   color: #606c71; }
 
+div#video1 {
+  text-align:center;
+  width:100%;
+}
+
 a {
   color: #1e6bb8;
   text-decoration: none; }
