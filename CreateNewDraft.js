@@ -71,6 +71,8 @@ function subfunction(labelname)
     for (k = 0; k < attachments.length; k++)
     {
         var fullname = attachments[k].getName();
+	var attsize = attachments[k].getSize();
+        if (attsize > 9500000) {continue} // if attachment size is more than 9.5 MB, continue to next attachment
         var ext = fullname.split(".")[fullname.split(".").length - 1];
         var mT = GetMimeType(ext);
         if (!mT) {continue;}
