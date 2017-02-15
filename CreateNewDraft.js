@@ -68,17 +68,22 @@ function subfunction(labelname)
     var AName = [];
     var AMimeType = [];
     var ABytes = [];
-    for (k = 0; k < attachments.length; k++)
+    var count = 0;
+    var kindex = 0;
+    while (kindex < attachments.length)
     {
-        var fullname = attachments[k].getName();
-	var attsize = attachments[k].getSize();
-        if (attsize > 9500000) {continue} // if attachment size is more than 9.5 MB, continue to next attachment
+        var attsize = attachments[kindex].getSize();
+        var totalattsize = count + attsize;
+        count = totalattsize;
+        if (count > 900000) {break;} // if total attachment size exceeds 9 MB, then break loop
+        var fullname = attachments[kindex].getName();
         var ext = fullname.split(".")[fullname.split(".").length - 1];
         var mT = GetMimeType(ext);
         if (!mT) {continue;}
         AName.push(fullname);
         AMimeType.push(mT);
-        ABytes.push(Utilities.base64Encode(attachments[k].getBytes()));
+        ABytes.push(Utilities.base64Encode(attachments[kindex].getBytes()));
+        kindex++;
     }
     var data = 
         {
@@ -224,18 +229,18 @@ function CreateDraft(data)
   var boundary = "123456654321";
   
   var message = 'From: ' + myEmailAddress + '\n' +
-			          'To: ' +   data["emailFrom"] + '\n' +
-				        'Cc: ' +   data["emailCcHdr"] + '\n' +
-			          'Subject: ' + data["subject"] + '\n' +
-				        'MIME-Version: 1.0' + '\n' +
-			          'Content-Type: multipart/mixed;' +
-				        'boundary="' + boundary + '"' + '\n\n' +
+		 'To: ' +   data["emailFrom"] + '\n' +
+		 'Cc: ' +   data["emailCcHdr"] + '\n' +
+		 'Subject: ' + data["subject"] + '\n' +
+		 'MIME-Version: 1.0' + '\n' +
+		 'Content-Type: multipart/mixed;' +
+		 'boundary="' + boundary + '"' + '\n\n' +
 										  
-			         	'--' + boundary + '\n' +
-				        'Content-Type: text/html; charset="UTF-8";' + '\n' +
-				        'Content-Transfer-Encoding: base64' + '\n\n' +
+		'--' + boundary + '\n' +
+		'Content-Type: text/html; charset="UTF-8";' + '\n' +
+		'Content-Transfer-Encoding: base64' + '\n\n' +
 										  
-			        	 htmlBody + '<br>' + emailsig + '<br>' + emailheader + '<br>' + data["emailmsg"] + '\n';
+		htmlBody + '<br>' + emailsig + '<br>' + emailheader + '<br>' + data["emailmsg"] + '\n';
   
   var msgattach = "";
   for (u=0; u < data["AName"].length; u++)
@@ -255,20 +260,19 @@ function CreateDraft(data)
   var endofmessage = '--' + boundary + '--';
   
   message += endofmessage;
-  
-  var draftBody = Utilities.base64Encode(message).replace(/\=/g, "").replace(/\+/g,'-').replace(/\//g,'_'); //baseurl64 encoding
-  
-  var params = {method:"post",
-                contentType: "message/rcf2822",               
-                headers: {"Authorization": "Bearer " + ScriptApp.getOAuthToken()},
-                muteHttpExceptions:true,
-                payload:JSON.stringify(
-                  { "message": 
-                   { "raw": draftBody } 
-                  }  )
-               };                                               
-  var resp = UrlFetchApp.fetch("https://www.googleapis.com/gmail/v1/users/me/drafts?uploadType=media", params);
-  var respobj = JSON.parse(resp.getContentText()); //  converts string to JSON object
+	
+  var response = UrlFetchApp.fetch(
+      "https://www.googleapis.com/upload/gmail/v1/users/me/drafts?uploadType=media", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + ScriptApp.getOAuthToken(),
+        "Content-Type": "message/rfc822",
+      },
+      muteHttpExceptions: true,
+      payload: message
+    });
+                                               
+  var respobj = JSON.parse(response.getContentText()); //  converts string to JSON object
   if (respobj.message.id) // if draft is created, it will have an id. if id is found, remove labels.
   {
     RemoveLabel(data["labelname"], data["thread"]);
